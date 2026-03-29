@@ -66,18 +66,18 @@ const handleAddProfile = () => {
         <div class="profile-modal__form">
           <input
             v-model="newProfileName"
-            class="profile-modal__input"
+            class="profile-modal__input input"
             type="text"
             maxlength="16"
             placeholder="Np. Gosc"
           >
 
-          <label class="profile-modal__toggle">
+          <label class="profile-modal__toggle checkbox">
             <input v-model="newProfileKids" type="checkbox">
             Profil dzieci
           </label>
 
-          <button class="profile-modal__create-button" type="button" @click="handleAddProfile">
+          <button class="profile-modal__create-button button is-info" type="button" @click="handleAddProfile">
             Dodaj
           </button>
         </div>
@@ -239,13 +239,4 @@ const handleAddProfile = () => {
   cursor: pointer;
 }
 
-@media (max-width: 900px) {
-  .profile-modal__box {
-    margin: 20px 16px 0;
-  }
-
-  .profile-modal__grid {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

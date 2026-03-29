@@ -159,16 +159,4 @@ onMounted(() => {
   transform: translateY(-1px);
 }
 
-@media (max-width: 980px) {
-  .pwa-install {
-    width: 100%;
-    justify-content: center;
-    order: 4;
-  }
-
-  .pwa-install__button {
-    width: 100%;
-    justify-content: center;
-  }
-}
 </style>

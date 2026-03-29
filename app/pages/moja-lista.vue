@@ -131,13 +131,4 @@ const hiddenItems = computed(() => getByIds(hiddenIds.value))
   cursor: pointer;
 }
 
-@media (max-width: 720px) {
-  .list-page__hidden {
-    padding-inline: 0;
-  }
-
-  .list-page__hidden-card {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

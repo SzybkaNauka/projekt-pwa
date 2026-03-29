@@ -1,12 +1,19 @@
 <template>
-  <main class="about-page">
-    <section class="about-page__box">
+  <main class="about-page section">
+    <section class="about-page__box box">
       <p class="about-page__eyebrow">O aplikacji</p>
       <h1 class="about-page__title">StreamBox</h1>
       <p class="about-page__text">
         Projekt inspirowany nowoczesnymi platformami VOD. Aplikacja zostala przygotowana w Nuxt 4
-        z naciskiem na nowoczesny interfejs, routing oraz PWA.
+        z naciskiem na nowoczesny interfejs, routing oraz PWA. Warstwa komponentowa korzysta tez
+        z frameworka Bulma, zeby bylo to widoczne w projekcie.
       </p>
+
+      <div class="tags are-medium about-page__tags">
+        <span class="tag is-info is-light">Nuxt 4</span>
+        <span class="tag is-link is-light">Bulma</span>
+        <span class="tag is-primary is-light">PWA</span>
+      </div>
 
       <div class="about-page__install">
         <div>
@@ -19,6 +26,15 @@
         </div>
 
         <PwaInstallButton />
+      </div>
+
+      <div class="buttons about-page__actions">
+        <NuxtLink to="/" class="button is-info is-light is-rounded">
+          Strona glowna
+        </NuxtLink>
+        <NuxtLink to="/moja-lista" class="button is-link is-light is-rounded">
+          Moja lista
+        </NuxtLink>
       </div>
     </section>
   </main>
@@ -59,6 +75,10 @@
   color: #d7e1ea;
 }
 
+.about-page__tags {
+  margin-top: 22px;
+}
+
 .about-page__install {
   display: flex;
   align-items: center;
@@ -85,10 +105,8 @@
   line-height: 1.7;
 }
 
-@media (max-width: 900px) {
-  .about-page__install {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.about-page__actions {
+  margin-top: 24px;
 }
+
 </style>

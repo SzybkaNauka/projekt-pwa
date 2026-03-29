@@ -244,30 +244,4 @@ const emit = defineEmits<{
   margin-top: 8px;
 }
 
-@media (max-width: 720px) {
-  .xray {
-    top: 86px;
-    right: 16px;
-    bottom: 16px;
-    left: 16px;
-    width: auto;
-    height: min(68vh, calc(100vh - 110px));
-    padding: 12px;
-    border-radius: 18px;
-  }
-
-  .xray__title {
-    font-size: 18px;
-  }
-
-  .xray__header {
-    margin: -12px -12px 12px;
-    padding: 12px 12px 10px;
-    border-radius: 18px 18px 14px 14px;
-  }
-
-  .xray__body {
-    height: calc(100% - 62px);
-  }
-}
 </style>

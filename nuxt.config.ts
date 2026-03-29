@@ -4,7 +4,7 @@ export default defineNuxtConfig({
 
   modules: ['@vite-pwa/nuxt'],
 
-  css: ['~/assets/css/main.css'],
+  css: ['bulma/css/bulma.min.css', '~/assets/css/main.css'],
 
   app: {
     head: {
@@ -15,15 +15,10 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: 'Nowoczesna aplikacja streamingowa PWA w Nuxt 4.' },
         { name: 'theme-color', content: '#07131f' },
-        { name: 'mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-        { name: 'apple-mobile-web-app-title', content: 'StreamBox' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
+        { name: 'viewport', content: 'width=1440, initial-scale=1' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/icons/icon-192.png' },
-        { rel: 'apple-touch-icon', href: '/icons/icon-192.png' },
       ],
     },
   },

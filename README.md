@@ -1,75 +1,55 @@
-# Nuxt Minimal Starter
+# StreamBox PWA
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Desktop-first aplikacja VOD zbudowana w `Nuxt 4`, z warstwą `PWA` i widocznym użyciem `Bulma`.
 
-## Setup
+## Stack
 
-Make sure to install dependencies:
+- `Nuxt 4`
+- `@vite-pwa/nuxt`
+- `Bulma`
+- `Vue 3`
+
+## Uruchomienie
+
+Zainstaluj zależności:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+Uruchom development:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+Zbuduj wersję produkcyjną:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Uruchom gotowy build:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+node .output/server/index.mjs
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Instalacja jako aplikacja w Chrome
+
+Po uruchomieniu buildu wejdź na:
+
+```text
+http://localhost:3000
+```
+
+Następnie w Chrome:
+
+- kliknij ikonę instalacji w pasku adresu, albo
+- wybierz `Zainstaluj StreamBox` z menu Chrome.
+
+## Założenia projektu
+
+- interfejs jest przygotowany pod desktop, bez wersji mobile
+- PWA działa przez `manifest.webmanifest` i `service worker`
+- Bulma jest podłączona globalnie i użyta bezpośrednio w UI, żeby była widoczna przy ocenie
