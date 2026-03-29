@@ -121,6 +121,8 @@ watch(
             <input
               ref="searchField"
               v-model="searchInput"
+              id="navbar-search"
+              name="q"
               class="navbar__search-input"
               type="search"
               placeholder="Szukaj filmow, seriali i kategorii"

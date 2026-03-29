@@ -23,6 +23,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/icons/icon-192.png' },
+        { rel: 'manifest', href: '/manifest.webmanifest' },
         { rel: 'apple-touch-icon', href: '/icons/icon-192.png' },
       ],
     },
@@ -31,6 +32,7 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     strategies: 'generateSW',
+    filename: 'manifest.webmanifest',
     includeAssets: [
       'favicon.ico',
       'icons/icon-64.png',
@@ -133,7 +135,6 @@ export default defineNuxtConfig({
       cleanupOutdatedCaches: true,
       clientsClaim: true,
       skipWaiting: true,
-      navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
       runtimeCaching: [
         {
