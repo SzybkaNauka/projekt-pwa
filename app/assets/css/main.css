@@ -84,8 +84,7 @@ video {
   align-items: flex-start;
   gap: 18px;
   overflow-x: auto;
-  padding: 18px 0 190px;
-  margin-bottom: -110px;
+  padding: 8px 0 20px;
   scroll-behavior: smooth;
   scrollbar-gutter: stable both-edges;
 }
