@@ -8,32 +8,45 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'StreamBox',
+      title: 'Prime Video',
       htmlAttrs: {
         lang: 'pl',
       },
       meta: [
-        { name: 'description', content: 'Nowoczesna aplikacja streamingowa PWA w Nuxt 4.' },
+        { name: 'description', content: 'Prime Video jako instalowalna aplikacja PWA w Nuxt 4.' },
         { name: 'theme-color', content: '#07131f' },
-        { name: 'viewport', content: 'width=1440, initial-scale=1' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Prime Video' },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/icons/icon-192.png' },
+        { rel: 'apple-touch-icon', href: '/icons/icon-192.png' },
       ],
     },
   },
 
   pwa: {
     registerType: 'autoUpdate',
-    includeAssets: ['favicon.ico'],
+    strategies: 'generateSW',
+    includeAssets: [
+      'favicon.ico',
+      'icons/icon-64.png',
+      'icons/icon-128.png',
+      'icons/icon-192.png',
+      'icons/icon-256.png',
+      'icons/icon-512.png',
+    ],
     manifest: {
       id: '/',
-      name: 'StreamBox',
-      short_name: 'StreamBox',
-      description: 'Nowoczesna aplikacja streamingowa',
+      name: 'Prime Video',
+      short_name: 'Prime Video',
+      description: 'Prime Video jako instalowalna aplikacja PWA',
       theme_color: '#07131f',
       background_color: '#07131f',
-      orientation: 'portrait',
+      orientation: 'any',
       categories: ['entertainment', 'video', 'lifestyle'],
       lang: 'pl-PL',
       dir: 'ltr',
@@ -84,8 +97,23 @@ export default defineNuxtConfig({
       ],
       icons: [
         {
+          src: '/icons/icon-64.png',
+          sizes: '64x64',
+          type: 'image/png',
+        },
+        {
+          src: '/icons/icon-128.png',
+          sizes: '128x128',
+          type: 'image/png',
+        },
+        {
           src: '/icons/icon-192.png',
           sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/icons/icon-256.png',
+          sizes: '256x256',
           type: 'image/png',
         },
         {
@@ -102,6 +130,9 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
+      skipWaiting: true,
       navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
       runtimeCaching: [

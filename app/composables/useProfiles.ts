@@ -3,6 +3,8 @@ export interface StreamProfile {
   name: string
   color: string
   kids: boolean
+  audience: 'kids' | 'teens' | 'adults'
+  maturityLimit: 13 | 16 | 18
 }
 
 export interface ContinueWatchingEntry {
@@ -13,14 +15,33 @@ export interface ContinueWatchingEntry {
   updatedAt: number
 }
 
+const audienceConfig = {
+  kids: {
+    color: '#f59e0b',
+    kids: true,
+    maturityLimit: 13 as const,
+  },
+  teens: {
+    color: '#8b5cf6',
+    kids: false,
+    maturityLimit: 16 as const,
+  },
+  adults: {
+    color: '#10b981',
+    kids: false,
+    maturityLimit: 18 as const,
+  },
+}
+
 const defaultProfiles: StreamProfile[] = [
-  { id: 'p1', name: 'Piotr', color: '#1f80d7', kids: false },
-  { id: 'p2', name: 'Dzieci', color: '#f59e0b', kids: true },
+  { id: 'p1', name: 'Piotr', color: '#1f80d7', kids: false, audience: 'adults', maturityLimit: 18 },
+  { id: 'p2', name: 'Dzieci', color: '#f59e0b', kids: true, audience: 'kids', maturityLimit: 13 },
 ]
 
 export const useProfiles = () => {
   const profiles = useState<StreamProfile[]>('profiles', () => defaultProfiles)
   const activeProfileId = useState<string>('active-profile-id', () => 'p1')
+  const isAuthenticated = useState<boolean>('profiles-authenticated', () => false)
   const favoriteMap = useState<Record<string, string[]>>('favorite-map', () => ({
     p1: [],
     p2: [],
@@ -34,6 +55,22 @@ export const useProfiles = () => {
     p2: [],
   }))
   const profileSelectorOpen = useState('profile-selector-open', () => false)
+
+  const normalizeProfile = (profile: Partial<StreamProfile>, index: number): StreamProfile => {
+    const audience = profile.audience || (profile.kids ? 'kids' : 'adults')
+    const config = audienceConfig[audience]
+
+    return {
+      id: profile.id || `p${index + 1}`,
+      name: profile.name?.trim() || `Profil ${index + 1}`,
+      color: profile.color || config.color,
+      kids: typeof profile.kids === 'boolean' ? profile.kids : config.kids,
+      audience,
+      maturityLimit: profile.maturityLimit || config.maturityLimit,
+    }
+  }
+
+  profiles.value = profiles.value.map(normalizeProfile)
 
   const ensureBucket = <T>(mapRef: Ref<Record<string, T[]>>, profileId: string) => {
     if (!profileId) {
@@ -75,6 +112,7 @@ export const useProfiles = () => {
   const setActiveProfile = (profileId: string) => {
     activeProfileId.value = profileId
     ensureAllBuckets(profileId)
+    isAuthenticated.value = true
     profileSelectorOpen.value = false
   }
 
@@ -83,10 +121,14 @@ export const useProfiles = () => {
   }
 
   const closeProfileSelector = () => {
+    if (!isAuthenticated.value) {
+      return
+    }
+
     profileSelectorOpen.value = false
   }
 
-  const addProfile = (name: string, kids = false) => {
+  const addProfile = (name: string, audience: StreamProfile['audience'] = 'adults') => {
     const normalizedName = name.trim()
 
     if (!normalizedName || profiles.value.length >= 6) {
@@ -94,12 +136,15 @@ export const useProfiles = () => {
     }
 
     const newId = `p${Date.now()}`
+    const config = audienceConfig[audience]
 
     profiles.value.push({
       id: newId,
       name: normalizedName,
-      color: kids ? '#f59e0b' : '#10b981',
-      kids,
+      color: config.color,
+      kids: config.kids,
+      audience,
+      maturityLimit: config.maturityLimit,
     })
 
     ensureAllBuckets(newId)
@@ -184,9 +229,30 @@ export const useProfiles = () => {
       continueWatchingEntries.value.filter(item => item.id !== id)
   }
 
+  const ensureProfileLogin = () => {
+    profileSelectorOpen.value = true
+  }
+
+  const getProfileAudienceLabel = (profile?: Pick<StreamProfile, 'audience' | 'maturityLimit'> | null) => {
+    if (!profile) {
+      return 'Profil'
+    }
+
+    if (profile.audience === 'kids') {
+      return 'Profil dzieci 13+'
+    }
+
+    if (profile.audience === 'teens') {
+      return 'Profil mlodziezowy 16+'
+    }
+
+    return 'Profil dorosly 18+'
+  }
+
   return {
     profiles,
     activeProfileId,
+    isAuthenticated,
     currentProfile,
     favoriteIds,
     hiddenIds,
@@ -195,8 +261,10 @@ export const useProfiles = () => {
     setActiveProfile,
     openProfileSelector,
     closeProfileSelector,
+    ensureProfileLogin,
     addProfile,
     removeProfile,
+    getProfileAudienceLabel,
     isFavorite,
     isHidden,
     toggleFavorite,

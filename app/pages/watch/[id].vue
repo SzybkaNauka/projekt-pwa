@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const route = useRoute()
 const router = useRouter()
-const { catalog, getById } = useCatalog()
-const { isFavorite, toggleFavorite, updateContinueWatching, removeFromContinueWatching } = useProfiles()
+const { catalog, getById, canProfileAccess } = useCatalog()
+const { currentProfile, isFavorite, toggleFavorite, updateContinueWatching, removeFromContinueWatching } = useProfiles()
 
 const mediaId = computed(() => String(route.params.id || ''))
 const isTrailer = computed(() => route.query.trailer === '1')
@@ -12,6 +12,13 @@ if (!item.value) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Nie znaleziono tytulu',
+  })
+}
+
+if (!canProfileAccess(item.value, currentProfile.value)) {
+  throw createError({
+    statusCode: 403,
+    statusMessage: 'Ten profil nie ma dostepu do tego tytulu',
   })
 }
 
@@ -31,7 +38,11 @@ const videoSource = computed(() =>
 const favoriteActive = computed(() => isFavorite(item.value!.id))
 const relatedItems = computed(() =>
   catalog
-    .filter(candidate => candidate.id !== item.value!.id && candidate.type === item.value!.type)
+    .filter(candidate =>
+      candidate.id !== item.value!.id
+      && candidate.type === item.value!.type
+      && canProfileAccess(candidate, currentProfile.value),
+    )
     .slice(0, 4),
 )
 const playbackLabel = computed(() => {

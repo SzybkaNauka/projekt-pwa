@@ -4,7 +4,7 @@ export interface MediaItem {
   type: 'film' | 'serial'
   year: number
   duration: string
-  maturity: '7+' | '13+' | '16+'
+  maturity: '7+' | '13+' | '16+' | '18+'
   badge: string
   ranking: string
   description: string
@@ -21,6 +21,7 @@ export interface MediaItem {
 
 export interface ProfileLike {
   kids?: boolean
+  maturityLimit?: number
 }
 
 const mediaCatalog: MediaItem[] = [
@@ -30,7 +31,7 @@ const mediaCatalog: MediaItem[] = [
     type: 'film',
     year: 2026,
     duration: '2 h 13 min',
-    maturity: '16+',
+    maturity: '18+',
     badge: 'NOWY FILM',
     ranking: '#5 w Polsce',
     description:
@@ -88,7 +89,7 @@ const mediaCatalog: MediaItem[] = [
     type: 'film',
     year: 2024,
     duration: '2 h 02 min',
-    maturity: '16+',
+    maturity: '18+',
     badge: 'W PAKIECIE',
     ranking: '#8 w Polsce',
     description:
@@ -138,7 +139,7 @@ const mediaCatalog: MediaItem[] = [
     type: 'serial',
     year: 2026,
     duration: '1 sezon',
-    maturity: '16+',
+    maturity: '18+',
     badge: 'SERIAL',
     ranking: '#1 w Polsce',
     description:
@@ -163,7 +164,7 @@ const mediaCatalog: MediaItem[] = [
     type: 'serial',
     year: 2025,
     duration: '2 sezony',
-    maturity: '16+',
+    maturity: '18+',
     badge: 'SERIAL',
     ranking: '#6 w Polsce',
     description:
@@ -213,7 +214,7 @@ const mediaCatalog: MediaItem[] = [
     type: 'film',
     year: 2026,
     duration: '1 h 58 min',
-    maturity: '16+',
+    maturity: '18+',
     badge: 'TOP 10',
     ranking: '#3 w Polsce',
     description:
@@ -338,6 +339,7 @@ const maturityRank: Record<MediaItem['maturity'], number> = {
   '7+': 7,
   '13+': 13,
   '16+': 16,
+  '18+': 18,
 }
 
 export const useCatalog = () => {
@@ -350,6 +352,15 @@ export const useCatalog = () => {
       .map(id => getById(id))
       .filter((item): item is MediaItem => Boolean(item))
 
+  const canProfileAccess = (item: MediaItem, profile?: ProfileLike | null) => {
+    if (!profile) {
+      return true
+    }
+
+    const limit = profile.maturityLimit || (profile.kids ? 13 : 18)
+    return maturityRank[item.maturity] <= limit
+  }
+
   const filterVisible = (items: MediaItem[], profile?: ProfileLike | null, hiddenIds: string[] = []) => {
     const hiddenSet = new Set(hiddenIds)
 
@@ -358,11 +369,7 @@ export const useCatalog = () => {
         return false
       }
 
-      if (profile?.kids) {
-        return maturityRank[item.maturity] <= 13
-      }
-
-      return true
+      return canProfileAccess(item, profile)
     })
   }
 
@@ -375,6 +382,7 @@ export const useCatalog = () => {
     series,
     getById,
     getByIds,
+    canProfileAccess,
     filterVisible,
   }
 }

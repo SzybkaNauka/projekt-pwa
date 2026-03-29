@@ -15,6 +15,7 @@ const {
   continueWatchingEntries,
   hiddenIds,
   openProfileSelector,
+  getProfileAudienceLabel,
 } = useProfiles()
 
 const watchlistItems = computed(() => getByIds(favoriteIds.value))
@@ -244,7 +245,7 @@ watch(
             <p class="navbar__dropdown-label">Aktywny profil</p>
             <p class="navbar__profile-name">{{ currentProfile?.name }}</p>
             <p class="navbar__profile-meta">
-              {{ currentProfile?.kids ? 'Tryb dzieci' : 'Tryb standardowy' }}
+              {{ getProfileAudienceLabel(currentProfile) }}
             </p>
 
             <button class="navbar__profile-button" type="button" @click="openProfileSelector">
