@@ -1,23 +1,34 @@
-<script setup>
-const series = [
-  { title: 'Granica Mroku', image: '/images/posters/poster-7.jpg' },
-  { title: 'Miasto Bez Snu', image: '/images/posters/poster-8.jpg' },
-  { title: 'Kod 47', image: '/images/posters/poster-9.jpg' },
-  { title: 'Ostatnia Linia', image: '/images/posters/poster-10.jpg' },
-  { title: 'Widmo', image: '/images/posters/poster-1.jpg' },
-  { title: 'Punkt Krytyczny', image: '/images/posters/poster-2.jpg' },
-]
+<script setup lang="ts">
+const { series, filterVisible } = useCatalog()
+const { currentProfile, hiddenIds, continueWatchingEntries } = useProfiles()
+
+const visibleSeries = computed(() => filterVisible(series, currentProfile.value, hiddenIds.value))
+const seriesLead = computed(() => visibleSeries.value.slice(0, 6))
+const recentSeries = computed(() => visibleSeries.value.slice(1, 7))
+
+const continueMap = computed(() => new Map(continueWatchingEntries.value.map(entry => [entry.id, entry.progress])))
+const continueSeries = computed(() =>
+  visibleSeries.value
+    .filter(item => continueMap.value.has(item.id))
+    .map(item => ({ ...item, progress: continueMap.value.get(item.id) || 0 })),
+)
 </script>
 
 <template>
   <main class="page">
-    <section class="page__hero">
+    <section class="page__hero page-wrap">
       <h1 class="page__title">Seriale</h1>
       <p class="page__text">Nowe sezony, polecane serie i najmocniejsze premiery.</p>
     </section>
 
-    <MovieRow title="Popularne seriale" :items="series" />
-    <MovieRow title="Ogladaj dalej" :items="series" />
+    <MediaRow title="Popularne seriale" subtitle="Kryminal, dramat i mocny klimat." :items="seriesLead" />
+    <MediaRow
+      v-if="continueSeries.length"
+      title="Ogladaj dalej"
+      subtitle="Wznow od ostatnio zapisanego momentu."
+      :items="continueSeries"
+    />
+    <MediaRow title="Swieze sezony" subtitle="Nowe odcinki i premiery serialowe." :items="recentSeries" />
   </main>
 </template>
 
@@ -27,9 +38,7 @@ const series = [
 }
 
 .page__hero {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 24px 32px;
+  padding-bottom: 18px;
 }
 
 .page__title {

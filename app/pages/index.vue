@@ -1,32 +1,41 @@
-<script setup>
-const featured = [
-  { title: 'Aniol Stroz', image: '/images/posters/poster-1.jpg' },
-  { title: 'Agent', image: '/images/posters/poster-2.jpg' },
-  { title: 'Wielki Marsz', image: '/images/posters/poster-3.jpg' },
-  { title: 'Borderlands', image: '/images/posters/poster-4.jpg' },
-  { title: 'Kruk', image: '/images/posters/poster-5.jpg' },
-]
+<script setup lang="ts">
+const { catalog, movies, series, getByIds, filterVisible } = useCatalog()
+const { currentProfile, hiddenIds, continueWatchingEntries, favoriteIds } = useProfiles()
 
-const top10 = [
-  { title: 'Zaginiony', image: '/images/posters/poster-6.jpg' },
-  { title: 'Dark City', image: '/images/posters/poster-7.jpg' },
-  { title: 'Skok', image: '/images/posters/poster-8.jpg' },
-  { title: 'Strefa Cienia', image: '/images/posters/poster-9.jpg' },
-  { title: 'Projekt Zero', image: '/images/posters/poster-10.jpg' },
-]
+const visibleCatalog = computed(() => filterVisible(catalog, currentProfile.value, hiddenIds.value))
+const visibleMovies = computed(() => filterVisible(movies, currentProfile.value, hiddenIds.value))
+const visibleSeries = computed(() => filterVisible(series, currentProfile.value, hiddenIds.value))
+
+const heroItem = computed(() => visibleCatalog.value[0] || catalog[0])
+const trendingItems = computed(() => visibleCatalog.value.slice(0, 6))
+const freshItems = computed(() => visibleCatalog.value.slice(3, 9))
+const movieSpotlight = computed(() => visibleMovies.value.slice(0, 6))
+const seriesSpotlight = computed(() => visibleSeries.value.slice(0, 6))
+const favorites = computed(() => getByIds(favoriteIds.value))
+const continueItems = computed(() => {
+  const progressById = new Map(continueWatchingEntries.value.map(entry => [entry.id, entry.progress]))
+  return getByIds(continueWatchingEntries.value.map(entry => entry.id)).map(item => ({
+    ...item,
+    progress: progressById.get(item.id) || 0,
+  }))
+})
 </script>
 
 <template>
   <main class="home-page">
-    <HeroBanner
-      title="Aniol Stroz"
-      description="Poczatkujacy, ale pelen dobrych checi aniol wywraca do gory nogami zycie magazyniera i oplywajacego w luksusy kapitalisty."
-      background-image="/images/hero/hero-main.jpg"
-    />
+    <MediaHero :item="heroItem" />
 
-    <MovieRow title="Filmy z napisami" :items="featured" />
-    <MovieRow title="Top 10 w tym tygodniu" :items="top10" />
-    <MovieRow title="Popularne teraz" :items="featured" />
+    <MediaRow
+      v-if="continueItems.length"
+      title="Kontynuuj ogladanie"
+      subtitle="Zapis postepu dziala osobno dla aktywnego profilu."
+      :items="continueItems"
+    />
+    <MediaRow title="Top 10 w tym tygodniu" subtitle="Najmocniejsze premiery i powroty." :items="trendingItems" />
+    <MediaRow title="Nowosci" subtitle="Swieze tytuly gotowe do odpalenia." :items="freshItems" />
+    <MediaRow title="Filmy" subtitle="Kinowe premiery i mocne thrillery." :items="movieSpotlight" />
+    <MediaRow title="Seriale" subtitle="Sezony, ktore wciagaja od pierwszego odcinka." :items="seriesSpotlight" />
+    <MediaRow v-if="favorites.length" title="Moja lista" subtitle="Twoje zapisane tytuly." :items="favorites" />
   </main>
 </template>
 
